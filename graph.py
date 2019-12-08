@@ -23,23 +23,23 @@ class Grafo:
         return str(self.adyacencias)
 
     def vertice_pertenece(self,x):
-    # Verifica que el vértice 'x' esté en el grafo. Opera en O(1)
+    """ Verifica que el vértice 'x' esté en el grafo. Opera en O(1). """
 
         if x in self.adyacencias:
             return True
         return False
 
     def verificar_adyacencia(self,x,y):
-    # Devuelve true si el vértice se encuentra en el grafo, false en
-    # caso contrario. Opera en O(1)
+    """ Devuelve true si el vértice se encuentra en el grafo, false en
+     caso contrario. Opera en O(1). """
 
         if (x in self.adyacencias) and (y in self.ayacencias[0]):
             return True
         return False
 
     def ver_adyacentes(self,x):
-    # Devuelve una lista con todas tuplas vértice-peso asociadas
-    # al arista 'x' pasado por parámetro. En el peor caso es O(|V|)
+    """ Devuelve una lista con todas tuplas vértice-peso asociadas
+     al arista 'x' pasado por parámetro. En el peor caso es O(|V|). """
 
         ady = []
 
@@ -49,10 +49,10 @@ class Grafo:
         return ady
 
     def agregar_vertice(self,x):
-    # Añade el vértice 'x' al diccionario de vértices, en caso de no estar.
-    # En un principio este está desconectado del resto de vértices. Si
-    # el vértice ya estaba en el grafo devuelve False. Opera en O(1) pues
-    # al principio está desconectado.
+    """ Añade el vértice 'x' al diccionario de vértices, en caso de no estar.
+     En un principio este está desconectado del resto de vértices. Si
+     el vértice ya estaba en el grafo devuelve False. Opera en O(1) pues
+     al principio está desconectado. """
 
         if x not in self.adyacencias:
             self.adyacencias[x] = {}
@@ -62,9 +62,9 @@ class Grafo:
         return False
 
     def sacar_vertice(self,x):
-    # Quita el vértice del grafo. Primero quita la fila que corresponde a la
-    # posición de 'x' en el diccionario. Luego elimina las aristas asociadas.
-    # Opera en O(|V| + |E|)
+    """ Quita el vértice del grafo. Primero quita la fila que corresponde a la
+     posición de 'x' en el diccionario. Luego elimina las aristas asociadas.
+     Opera en O(|V| + |E|). """
 
         muertos = None
 
@@ -79,10 +79,10 @@ class Grafo:
         return list(muertos.items())
 
     def agregar_arista(self,x,y,peso):
-    # Agrega una arista que conecta a los vértices 'x' y 'y', en caso
-    # de que estén dentro del grafo. Si alguno de los vértices no
-    # estaba en el grafo se devuelve False o True cuando la operación
-    # se ejecuta exitosamente. Opera en O(|V|) en el peor caso
+    """ Agrega una arista que conecta a los vértices 'x' y 'y', en caso
+     de que estén dentro del grafo. Si alguno de los vértices no
+     estaba en el grafo se devuelve False o True cuando la operación
+     se ejecuta exitosamente. Opera en O(|V|) en el peor caso. """
 
         if (x in self.adyacencias) and (y in self.adyacencias):
             self.adyacencias[x][y] = peso
@@ -93,9 +93,9 @@ class Grafo:
         return False
 
     def remover_arista(self,x,y):
-    # Quita la arista que conecta a los vértices pasados por parámetro
-    # en caso que se encuentren dentro del grafo. Opera en O(|V|) en el
-    # peor caso.
+    """ Quita la arista que conecta a los vértices pasados por parámetro
+     en caso que se encuentren dentro del grafo. Opera en O(|V|) en el
+     peor caso. """
 
         resultado = None
 
@@ -108,8 +108,8 @@ class Grafo:
         return resultado
 
     def ver_peso(self,x,y):
-    # Devuelve el peso de la arista que conecta a los vértices pasados
-    # por parámetro en caso que se encuentren dentro del grafo. Es O(1)
+    """ Devuelve el peso de la arista que conecta a los vértices pasados
+     por parámetro en caso que se encuentren dentro del grafo. Es O(1). """
 
         peso = None
 
@@ -119,10 +119,10 @@ class Grafo:
         return peso
 
     def cambiar_peso(self,x,y,peso):
-    # Cambia el peso de la arista que conecta a los vértices pasados
-    # por parámetro en caso que se encuentren dentro del grafo. Es O(1).
-    # Si alguno de los vértices no estaba en el grafo se
-    # devuelve False o True cuando la operación se ejecuta exitosamente.
+    """ Cambia el peso de la arista que conecta a los vértices pasados
+     por parámetro en caso que se encuentren dentro del grafo. Es O(1).
+     Si alguno de los vértices no estaba en el grafo se
+     devuelve False o True cuando la operación se ejecuta exitosamente. """
 
         if (x in self.adyacencias) and (y in self.adyacencias[x]):
             self.adyacencias[x][y] = peso
@@ -131,11 +131,22 @@ class Grafo:
 
         return False
 
+
+                    ########################
+                    #                      #
+                    #      ALGORÍTMOS      #
+                    #                      #
+                    ########################
+
+
+                               #
+
                     ########################
                     #                      #
                     #        TESTS         #
                     #                      #
                     ########################
+
 
 grafo = Grafo()
 print(grafo)
