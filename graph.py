@@ -8,10 +8,63 @@
 #
 #   Si el vértice 'x' está conectado con el vértice 'y' con una arista de
 #   peso 10, esté se estará así representado dentro del diccionario:
-#   adyacencias[x] = {... , y:10 , ...}
+#   adyacencias[x] = {... , {y:10} , ...}
 #
+                    ########################
+                    #                      #
+                    #      ALGORÍTMOS      #
+                    #                      #
+                    ########################
 
+def quick_sort(lista):
+    """Ordena la lista de forma recursiva.
+        Pre: los elementos de la lista deben ser comparables.
+        Post: la lista está ordenada. """
+
+    _quick_sort(lista, 0, len(lista) - 1)
+
+def _quick_sort(lista, inicio, fin):
+    """Función quick_sort recursiva.
+        Pre: los índices inicio y fin indican sobre qué porción operar.
+        Post: la lista está ordenada."""
+
+    if inicio >= fin:
+        return
+    menores = _partition(lista, inicio, fin)
+    _quick_sort(lista, inicio, menores - 1)
+    _quick_sort(lista, menores + 1, fin)
+
+
+def _partition(lista, inicio, fin):
+    """Función partición que trabaja sobre la misma lista.
+        Pre: los índices inicio y fin indican sobre qué porción operar.
+        Post: los menores están antes que el pivote, los mayores después.
+        Devuelve: la posición en la que quedó ubicado el pivote."""
+
+    pivote = lista[inicio]
+    menores = inicio
+
+    # Ubicar menores a la izquierda, mayores a la derecha
+    for i in range(inicio + 1, fin + 1):
+        if lista[i][1] < pivote[1]:
+            menores += 1
+            if i != menores:
+                _swap(lista, i, menores)
+    # Ubicar el pivote al final de los menores
+    if inicio != menores:
+        _swap(lista, inicio, menores)
+    return menores
+
+def _swap(lista, i, j):
+    """Intercambia los elementos i y j de lista."""
+    lista[j], lista[i] = lista[i], lista[j]
 import random
+
+                    ########################
+                    #                      #
+                    #        OBJETO        #
+                    #                      #
+                    ########################
 
 class Grafo:
 
@@ -133,12 +186,12 @@ class Grafo:
 
         return False
 
-    def grafo_esta_vacio(self):
+    def esta_vacio(self):
         """ Devuelve True si está vacío, False en caso contrario, en O(1). """
 
         return self.vertices == 0
 
-    def grafo_ver_vertices(self):
+    def ver_vertices(self):
         """Devuelve una lista con todos los vértices."""
 
         return [*self.adyacencia]
@@ -151,58 +204,23 @@ class Grafo:
             return random.choice(self.adyacencia)
         return None
 
+    def ver_aristas(self):
+        """Devuelve un diccionario con su clave siendo la tupla formada por
+        un par de vértices y la clave es el peso que las conecta."""
 
-                    ########################
-                    #                      #
-                    #      ALGORÍTMOS      #
-                    #                      #
-                    ########################
+        resultado = {}
+        for v in self.adyacencias:
+            for w in self.adyacencias[v]:
+                if (w,v) not in resultado:
+                    resultado[v,w] = self.adyacencias[v][w]
 
+        return list(resultado.items())
 
-                               #
+    def ver_aristas_ordenadas(self):
+        """Devuelve un diccionario con su clave siendo la tupla formada por
+        un par de vértices y la clave es el peso que las conecta. Está ordenado
+        de menor a mayor peso. Opera en O(|E|*log(|E|))."""
 
-                    ########################
-                    #                      #
-                    #        TESTS         #
-                    #                      #
-                    ########################
-
-
-grafo = Grafo()
-print(grafo)
-
-grafo.agregar_vertice('a')
-grafo.agregar_vertice('b')
-grafo.agregar_arista('a','b',10)
-print(grafo)
-
-grafo.agregar_arista('b','a',50)
-print(grafo)
-
-print(grafo.ver_peso('a','b'))
-
-grafo.cambiar_peso('b','a',100)
-print(grafo.ver_peso('a','b'))
-
-grafo.cambiar_peso('a','b',0)
-print(grafo.ver_peso('a','b'))
-print(grafo)
-
-grafo.agregar_vertice('c')
-grafo.agregar_arista('c','c',99)
-print(grafo)
-
-grafo.agregar_arista('c','b',1)
-grafo.agregar_arista('c','a',2)
-print(grafo)
-
-print(grafo)
-
-grafo.sacar_vertice('c')
-print(grafo)
-
-grafo.agregar_arista('b','a',50)
-print(grafo)
-
-grafo.cambiar_peso('b','a',100)
-print(grafo)
+        copia = self.ver_aristas()
+        quick_sort(copia)
+        return copia
