@@ -16,6 +16,9 @@
                     #                      #
                     ########################
 
+import random
+import heapq
+
 def quick_sort(lista):
     """Ordena la lista de forma recursiva.
         Pre: los elementos de la lista deben ser comparables.
@@ -58,7 +61,99 @@ def _partition(lista, inicio, fin):
 def _swap(lista, i, j):
     """Intercambia los elementos i y j de lista."""
     lista[j], lista[i] = lista[i], lista[j]
-import random
+
+def buscar_en_set(conjunto,target1,target2): #SIN TESTEAR
+    """DOCUMENTAR"""
+
+    a_devolver = []
+    for elemento in conjunto:
+        if target1 in elemento or target2 in elemento:
+            a_devolver.append(elemento)
+
+    return a_devolver
+
+def kruskal(grafo): #SIN TESTEAR
+    """DOCUMENTAR"""
+
+    vertices = []
+    vert = grafo.ver_vertices()
+    tree = Grafo()
+
+    for v in vert:
+        clase_de_eq = set()
+        set.add(v)
+        vertices.append(set)
+        tree.agregar_vertice(v)
+
+    aristas = grafo.ver_aristas_ordenadas()
+    for a in aristas:
+        a , b , peso = a[0][0] , a[0][1] , a[1]
+        for c_eq in vertices:
+            clases = buscar_en_set(c_eq,a,b)
+            if len(clases) == 1:
+                continue
+            tree.agregar_arista(a,b,peso)
+            clases[0].union(clases[1])
+
+    return tree
+
+# def dijkstra(grafo,origen):
+#     dist = {}
+#     padres = {}
+#     for v in grafo.ver_vertices():
+#         dist[v] = float('inf') #Número infinito, siempre es mayor que cualquier otro número
+#     dist[origen] = 0
+#     padre[origen] = None #INVESTIGAR COMO FUNCIONAN LOS HEAPS DE PYTHON PARA COMPARAR LAS ARISTAS Y ASÍ TERMINAR EL ALGORÍTMO
+
+def _dfs(grafo,v,visitados,padre,orden): #SIN TESTEAR
+    """DOCUMENTAR"""
+
+    visitados.add(v)
+    ady = grafo.ver_adyacentes(v)
+    for tupla in ady:
+        w = tupla[0]
+        if w not in visitados:
+            padre[w] = v
+            orden[w] = orden[v] + 1
+            dfs(grafo,w,visitados,padre,orden)
+
+
+def dfs(grafo,origen): #SIN TESTEAR
+    """DOCUMENTAR"""
+
+    visitados = set()
+    padres = {}
+    orden = {}
+    padre[origen] = None
+    orden[padre] = 0
+    _dfs(grafo,origen,visitados,padre,orden)
+    return padre, orden
+
+def bfs(grafo,origen): #SIN TESTEAR
+    """DOCUMENTAR"""
+
+    visitados = set()
+    padres = {}
+    orden = {}
+    cola = Cola() #IMPLEMENTAR
+    visitados.agregar(origen)
+    padres[origen] = None
+    orden[origen] = 0
+    cola.encolar(origen)
+
+    while !cola.esta_vacia():
+        v = cola.desencolar()
+        for tupla in grafo.ver_adyacentes(v):
+            w = tupla[0]
+            if w not in visitados:
+                visitados.agregar(w)
+                padre[w] = v
+                orden[w] = orden[v] + 1
+                cola.encolar(w)
+
+    return padre,orden
+
+
 
                     ########################
                     #                      #
@@ -77,12 +172,10 @@ class Grafo:
     def __str__(self):
         return str(self.adyacencias)
 
-    def vertice_pertenece(self,x):
+    def __contains__(self,x):
         """ Verifica que el vértice 'x' esté en el grafo. Opera en O(1). """
 
-        if x in self.adyacencias:
-            return True
-        return False
+        return x in self.adyacencias
 
     def ver_adyacencia(self,x,y):
         """ Devuelve true si el vértice se encuentra en el grafo, false en
@@ -224,3 +317,67 @@ class Grafo:
         copia = self.ver_aristas()
         quick_sort(copia)
         return copia
+
+    def cantidad_aristas(self):
+        """Devuelve la cantidad de aristas en O(1)."""
+        return self.aristas
+
+    def cantidad_vertices(self):
+        """Devuelve la cantidad de vértices en O(1)."""
+        return self.vertices
+
+                    ########################
+                    #                      #
+                    #        TESTS         #
+                    #                      #
+                    ########################
+
+
+grafo = Grafo()
+print(grafo)
+
+grafo.agregar_vertice('a')
+grafo.agregar_vertice('b')
+grafo.agregar_arista('a','b',10)
+print(grafo)
+
+grafo.agregar_arista('b','a',50)
+print(grafo)
+
+print(grafo.ver_peso('a','b'))
+
+grafo.cambiar_peso('b','a',100)
+print(grafo.ver_peso('a','b'))
+
+grafo.cambiar_peso('a','b',0)
+print(grafo.ver_peso('a','b'))
+print(grafo)
+
+grafo.agregar_vertice('c')
+grafo.agregar_arista('c','c',99)
+print(grafo)
+
+grafo.agregar_arista('c','b',1)
+grafo.agregar_arista('c','a',2)
+print(grafo)
+
+print(grafo.ver_adyacentes('a'))
+
+print("TEST\n\n")
+oh_shid = grafo.ver_aristas()
+print(oh_shid)
+print(grafo.ver_aristas_ordenadas())
+print("\n\nTEST")
+
+print(grafo)
+
+grafo.sacar_vertice('c')
+print(grafo)
+
+grafo.agregar_arista('b','a',50)
+print(grafo)
+
+grafo.cambiar_peso('b','a',100)
+print(grafo)
+
+print(grafo.ver_aristas())
