@@ -10,156 +10,36 @@
 #   peso 10, esté se estará así representado dentro del diccionario:
 #   adyacencias[x] = {... , {y:10} , ...}
 #
-                    ########################
-                    #                      #
-                    #      ALGORÍTMOS      #
-                    #                      #
-                    ########################
-
-import random
-import heapq
-
-def quick_sort(lista):
-    """Ordena la lista de forma recursiva.
-        Pre: los elementos de la lista deben ser comparables.
-        Post: la lista está ordenada. """
-
-    _quick_sort(lista, 0, len(lista) - 1)
-
-def _quick_sort(lista, inicio, fin):
-    """Función quick_sort recursiva.
-        Pre: los índices inicio y fin indican sobre qué porción operar.
-        Post: la lista está ordenada."""
-
-    if inicio >= fin:
-        return
-    menores = _partition(lista, inicio, fin)
-    _quick_sort(lista, inicio, menores - 1)
-    _quick_sort(lista, menores + 1, fin)
-
-
-def _partition(lista, inicio, fin):
-    """Función partición que trabaja sobre la misma lista.
-        Pre: los índices inicio y fin indican sobre qué porción operar.
-        Post: los menores están antes que el pivote, los mayores después.
-        Devuelve: la posición en la que quedó ubicado el pivote."""
-
-    pivote = lista[inicio]
-    menores = inicio
-
-    # Ubicar menores a la izquierda, mayores a la derecha
-    for i in range(inicio + 1, fin + 1):
-        if lista[i][1] < pivote[1]:
-            menores += 1
-            if i != menores:
-                _swap(lista, i, menores)
-    # Ubicar el pivote al final de los menores
-    if inicio != menores:
-        _swap(lista, inicio, menores)
-    return menores
-
-def _swap(lista, i, j):
-    """Intercambia los elementos i y j de lista."""
-    lista[j], lista[i] = lista[i], lista[j]
-
-def buscar_en_set(conjunto,target1,target2): #SIN TESTEAR
-    """DOCUMENTAR"""
-
-    a_devolver = []
-    for elemento in conjunto:
-        if target1 in elemento or target2 in elemento:
-            a_devolver.append(elemento)
-
-    return a_devolver
-
-def kruskal(grafo): #SIN TESTEAR
-    """DOCUMENTAR"""
-
-    vertices = []
-    vert = grafo.ver_vertices()
-    tree = Grafo()
-
-    for v in vert:
-        clase_de_eq = set()
-        set.add(v)
-        vertices.append(set)
-        tree.agregar_vertice(v)
-
-    aristas = grafo.ver_aristas_ordenadas()
-    for a in aristas:
-        a , b , peso = a[0][0] , a[0][1] , a[1]
-        for c_eq in vertices:
-            clases = buscar_en_set(c_eq,a,b)
-            if len(clases) == 1:
-                continue
-            tree.agregar_arista(a,b,peso)
-            clases[0].union(clases[1])
-
-    return tree
-
-# def dijkstra(grafo,origen):
-#     dist = {}
-#     padres = {}
-#     for v in grafo.ver_vertices():
-#         dist[v] = float('inf') #Número infinito, siempre es mayor que cualquier otro número
-#     dist[origen] = 0
-#     padre[origen] = None #INVESTIGAR COMO FUNCIONAN LOS HEAPS DE PYTHON PARA COMPARAR LAS ARISTAS Y ASÍ TERMINAR EL ALGORÍTMO
-
-def _dfs(grafo,v,visitados,padre,orden): #SIN TESTEAR
-    """DOCUMENTAR"""
-
-    visitados.add(v)
-    ady = grafo.ver_adyacentes(v)
-    for tupla in ady:
-        w = tupla[0]
-        if w not in visitados:
-            padre[w] = v
-            orden[w] = orden[v] + 1
-            dfs(grafo,w,visitados,padre,orden)
-
-
-def dfs(grafo,origen): #SIN TESTEAR
-    """DOCUMENTAR"""
-
-    visitados = set()
-    padres = {}
-    orden = {}
-    padre[origen] = None
-    orden[padre] = 0
-    _dfs(grafo,origen,visitados,padre,orden)
-    return padre, orden
-
-def bfs(grafo,origen): #SIN TESTEAR
-    """DOCUMENTAR"""
-
-    visitados = set()
-    padres = {}
-    orden = {}
-    cola = Cola() #IMPLEMENTAR
-    visitados.agregar(origen)
-    padres[origen] = None
-    orden[origen] = 0
-    cola.encolar(origen)
-
-    while !cola.esta_vacia():
-        v = cola.desencolar()
-        for tupla in grafo.ver_adyacentes(v):
-            w = tupla[0]
-            if w not in visitados:
-                visitados.agregar(w)
-                padre[w] = v
-                orden[w] = orden[v] + 1
-                cola.encolar(w)
-
-    return padre,orden
-
-
 
                     ########################
                     #                      #
                     #        OBJETO        #
                     #                      #
                     ########################
+
+class Cola:
+
+    def __init__(self):
+        self.items = []
+
+    def encolar(self,x):
+        """Mete un elemento en la estructura. Opera en O(1)."""
+
+        self.items.append(x)
+
+    def desencolar(self):
+        """Saca un elemento de la estructura en O(1). En caso de
+        estar vacía, devuelve el error correspondiente."""
+
+        if self.esta_vacia():
+            raise ValueError("La cola no tiene elementos.")
+        return self.items.pop(0)
+
+    def esta_vacia(self):
+        """Devuelve True si está vacía la cola, False en caso contrario;
+        todo en O(1)."""
+
+        return len(self.items) == 0
 
 class Grafo:
 
@@ -287,7 +167,7 @@ class Grafo:
     def ver_vertices(self):
         """Devuelve una lista con todos los vértices."""
 
-        return [*self.adyacencia]
+        return [*self.adyacencias]
 
     def vertice_aleatorio(self):
         """En caso de no estar vacío el grafo, devuelve un vértice random.
@@ -298,7 +178,7 @@ class Grafo:
         return None
 
     def ver_aristas(self):
-        """Devuelve un diccionario con su clave siendo la tupla formada por
+        """Devuelve una lista con su 'clave' siendo la tupla formada por
         un par de vértices y la clave es el peso que las conecta."""
 
         resultado = {}
@@ -328,10 +208,172 @@ class Grafo:
 
                     ########################
                     #                      #
-                    #        TESTS         #
+                    #      ALGORÍTMOS      #
                     #                      #
                     ########################
 
+import random
+import heapq
+
+def quick_sort(lista):
+    """Ordena la lista de forma recursiva.
+        Pre: los elementos de la lista deben ser comparables.
+        Post: la lista está ordenada. """
+
+    _quick_sort(lista, 0, len(lista) - 1)
+
+def _quick_sort(lista, inicio, fin):
+    """Función quick_sort recursiva.
+        Pre: los índices inicio y fin indican sobre qué porción operar.
+        Post: la lista está ordenada."""
+
+    if inicio >= fin:
+        return
+    menores = _partition(lista, inicio, fin)
+    _quick_sort(lista, inicio, menores - 1)
+    _quick_sort(lista, menores + 1, fin)
+
+
+def _partition(lista, inicio, fin):
+    """Función partición que trabaja sobre la misma lista.
+        Pre: los índices inicio y fin indican sobre qué porción operar.
+        Post: los menores están antes que el pivote, los mayores después.
+        Devuelve: la posición en la que quedó ubicado el pivote."""
+
+    pivote = lista[inicio]
+    menores = inicio
+
+    # Ubicar menores a la izquierda, mayores a la derecha
+    for i in range(inicio + 1, fin + 1):
+        if lista[i][1] < pivote[1]:
+            menores += 1
+            if i != menores:
+                _swap(lista, i, menores)
+    # Ubicar el pivote al final de los menores
+    if inicio != menores:
+        _swap(lista, inicio, menores)
+    return menores
+
+def _swap(lista, i, j):
+    """Intercambia los elementos i y j de lista."""
+    lista[j], lista[i] = lista[i], lista[j]
+
+def buscar_en_set(conjunto,target1,target2): #SIN TESTEAR
+    """Busca los dos elementos dentro de un conjunto de sets. Puede
+    devolver uno o dos sets, dependiendo de si los elementos están
+    en el mismo set o no."""
+
+    a_devolver = []
+    for elemento in conjunto:
+        if target1 in elemento or target2 in elemento:
+            a_devolver.append(elemento)
+
+    return a_devolver
+
+def kruskal(grafo): #SIN TESTEAR
+    """DOCUMENTAR"""
+
+    vertices = []
+    vert = grafo.ver_vertices()
+    tree = Grafo()
+
+    for v in vert:
+        clase_de_eq = set()
+        set.add(v)
+        vertices.append(set)
+        tree.agregar_vertice(v)
+
+    aristas = grafo.ver_aristas_ordenadas()
+    for a in aristas:
+        a , b , peso = a[0][0] , a[0][1] , a[1]
+        for c_eq in vertices:
+            clases = buscar_en_set(c_eq,a,b)
+            if len(clases) == 1:
+                continue
+            tree.agregar_arista(a,b,peso)
+            clases[0].union(clases[1])
+
+    return tree
+
+def dijkstra(grafo,origen):
+    """Este algorítmo devuelve un diccionario de padres y distancias
+    correspondientes al resultado del algorítmo de Dijkstra.
+    Pre: recibe un grafo válido y un vértice de origen válido.
+    Opera en O(|E|*log(|E|))."""
+
+    dist = {}
+    padre = {}
+    for v in grafo.ver_vertices():
+        dist[v] = float('inf') #Número infinito, siempre es mayor que cualquier otro número
+    dist[origen] = 0
+    padre[origen] = None
+    heap = []
+    heapq.heappush(heap,(0,origen))
+    while heap:
+        arista = heapq.heappop(heap) #(peso_hasta_a,'v')
+        v = arista[1]
+        for w in grafo.ver_adyacentes(v):
+            w = w[0]
+            if dist[v] + grafo.ver_peso(w,v) < dist[w]:
+                dist[w] = dist[v] + grafo.ver_peso(w,v)
+                padre[w] = v
+                heapq.heappush(heap,(dist[w],w))
+
+    return padre,dist
+
+def _dfs(grafo,v,visitados,padre,orden): #SIN TESTEAR
+    """DOCUMENTAR"""
+
+    visitados.add(v)
+    ady = grafo.ver_adyacentes(v)
+    for tupla in ady:
+        w = tupla[0]
+        if w not in visitados:
+            padre[w] = v
+            orden[w] = orden[v] + 1
+            _dfs(grafo,w,visitados,padre,orden)
+
+
+def dfs(grafo,origen): #SIN TESTEAR
+    """DOCUMENTAR"""
+
+    visitados = set()
+    padres = {}
+    orden = {}
+    padre[origen] = None
+    orden[origen] = 0
+    _dfs(grafo,origen,visitados,padre,orden)
+    return padre, orden
+
+def bfs(grafo,origen): #SIN TESTEAR
+    """DOCUMENTAR"""
+
+    visitados = set()
+    padres = {}
+    orden = {}
+    cola = Cola()
+    visitados.add(origen)
+    padres[origen] = None
+    orden[origen] = 0
+    cola.encolar(origen)
+
+    while not cola.esta_vacia():
+        v = cola.desencolar()
+        for tupla in grafo.ver_adyacentes(v):
+            w = tupla[0]
+            if w not in visitados:
+                visitados.add(w)
+                padre[w] = v
+                orden[w] = orden[v] + 1
+                cola.encolar(w)
+
+    return padre,orden
+
+                    ########################
+                    #                      #
+                    #        TESTS         #
+                    #                      #
+                    ########################
 
 grafo = Grafo()
 print(grafo)
@@ -363,11 +405,29 @@ print(grafo)
 
 print(grafo.ver_adyacentes('a'))
 
-print("TEST\n\n")
+print("TEST ARISTAS ORDENADAS\n\n")
 oh_shid = grafo.ver_aristas()
 print(oh_shid)
 print(grafo.ver_aristas_ordenadas())
-print("\n\nTEST")
+print("\n\nTEST ARISTAS ORDENADAS")
+
+print("TEST DIJKSTRA\n\n")
+padre , distancia = dijkstra(grafo,'a')
+print("Padre: ",padre)
+print("Distancia: ",distancia)
+print("\n\nTEST DIJKSTRA")
+
+print("TEST DFS\n\n")
+padre , orden = dfs(grafo,'a')
+print("Padre: ",padre)
+print("Orden: ",orden)
+print("\n\nTEST DFS")
+
+print("TEST BFS\n\n")
+padre , orden = bfs(grafo,'a')
+print("Padre: ",padre)
+print("Orden: ",orden)
+print("\n\nTEST BFS")
 
 print(grafo)
 
