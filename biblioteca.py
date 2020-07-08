@@ -64,7 +64,7 @@ def dijkstra(grafo,origen,destino=[]):
     padre = {}
     dist_llegada = {}
     for v in grafo.ver_vertices():
-        dist[v] = float('inf') #Número infinito, siempre es mayor que cualquier otro número
+        dist[v] = float('inf') # Infinito, siempre es mayor que cualquier otro número
         if v in destino:
             dist_llegada[v] = float('inf')
     dist[origen] = 0
